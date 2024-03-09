@@ -20,24 +20,3 @@ jobs:
         slotName: 'staging'
         package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
 
-- job: deploy
-  dependsOn: buildandtest
-  condition: succeeded()
-  pool:
-    vmImage: ubuntu-latest
-  steps:
-    # Download the artifact "drop" from the previous job
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        source: 'current'
-        artifact: 'drop'
-        path: '$(Pipeline.Workspace)'
-
-    # Deploy to Azure Web App production
-    - task: AzureWebApp@1
-      inputs:
-        azureSubscription: 'ff8975f4-7184-430d-a97a-4bbcab893446'
-        appType: webApp
-        appName: 'azubuntuwebapp3_prod'
-        resourceGroupName: cloud-shell-storage-westeurope
-        package: '$(Pipeline.Workspace)/**/*.zip'
